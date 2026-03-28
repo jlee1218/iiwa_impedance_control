@@ -8,6 +8,9 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(lbr_fri_idl REQUIRED)
@@ -20,6 +23,20 @@ find_package(Eigen3 REQUIRED)
 add_executable(impedance_controller src/impedance_controller.cpp src/dynamics_utilities.cpp)
 ament_target_dependencies(impedance_controller
   rclcpp
+  tf2
+  tf2_ros
+  tf2_geometry_msgs
+  std_msgs
+  geometry_msgs
+  lbr_fri_idl
+  pinocchio
+  Eigen3
+)
+
+add_executable(trajectory_generator src/trajectory_generator.cpp src/dynamics_utilities.cpp)
+ament_target_dependencies(trajectory_generator
+  rclcpp
+  tf2
   std_msgs
   geometry_msgs
   lbr_fri_idl
@@ -34,6 +51,9 @@ target_include_directories(impedance_controller PUBLIC
 target_compile_features(impedance_controller PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 install(TARGETS impedance_controller
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS trajectory_generator
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
