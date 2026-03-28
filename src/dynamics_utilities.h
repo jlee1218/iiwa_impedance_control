@@ -24,17 +24,16 @@ class Dynamics_Utilities {
 
     void calculate_ee_pose_delta(Eigen::VectorXd q_des);
 
+    Eigen::VectorXd convertTorqueToWrench(Eigen::VectorXd torque, Eigen::VectorXd q);
+
     // Eigen::VectorXd joint_impedance(Eigen::VectorXd q_des, Eigen::VectorXd q_dot_des, Eigen::VectorXd q, Eigen::VectorXd q_dot, double K_p = 1.0, double K_d = 1.0);
 
-    Eigen::VectorXd cartesian_impedance(Eigen::VectorXd x_des, Eigen::VectorXd q, Eigen::VectorXd q_dot);
 
     Eigen::VectorXd cartesian_impedance_no_g(Eigen::VectorXd x_des, Eigen::VectorXd q, Eigen::VectorXd q_dot);
 
     Eigen::VectorXd current_pose_delta = Eigen::VectorXd(6).setZero();
     Eigen::VectorXd current_pose = Eigen::VectorXd(6).setZero();
     pinocchio::SE3 current_pose_SE3;
-    Eigen::VectorXd current_applied_torque = Eigen::VectorXd(7).setZero();
-    Eigen::VectorXd current_applied_wrench = Eigen::VectorXd(6).setZero();
     Eigen::VectorXd prev_commanded_torque = Eigen::VectorXd(7).setZero();
 
     Eigen::VectorXd default_Kp_cart = (Eigen::VectorXd(6) << 100.0, 100.0, 100.0, 10.0, 10.0, 10.0).finished();
@@ -43,7 +42,7 @@ class Dynamics_Utilities {
     Eigen::MatrixXd Kp_cart = Eigen::MatrixXd(6,6).setZero();
     Eigen::MatrixXd Kd_cart = Eigen::MatrixXd(6,6).setZero();
 
-    Eigen::VectorXd low_pass_filter(Eigen::VectorXd desired_signal, Eigen::VectorXd prev_signal, double cutoff_freq =  500*(M_PI/180), double process_freq = 1000);
+    Eigen::VectorXd low_pass_filter(Eigen::VectorXd desired_signal, Eigen::VectorXd prev_signal, double cutoff_freq =  700*(M_PI/180), double process_freq = 1000);
 
   private:
     pinocchio::Model robot_model;

@@ -148,29 +148,6 @@ Eigen::MatrixXd Dynamics_Utilities::get_J(Eigen::VectorXd q) {
 //   return computed_torque;
 // }
 
-Eigen::VectorXd Dynamics_Utilities::cartesian_impedance(Eigen::VectorXd x_des, Eigen::VectorXd q, Eigen::VectorXd q_dot) {
-  Eigen::VectorXd g = this->get_tau_g(q);
-  Eigen::MatrixXd C = this->get_C(q, q_dot);
-  Eigen::MatrixXd M = this->get_M(q);
-  Eigen::MatrixXd J = this->get_J(q);
-
-  this->forward_kinematics(q);
-  this->calculate_ee_pose_delta(x_des);
-
-  Eigen::VectorXd cartesian_impedance_wrench = Kp_cart*current_pose_delta-Kd_cart*J*q_dot*(M_PI/180);
-  Eigen::VectorXd cartesian_impedance_torques = J.transpose()*cartesian_impedance_wrench;
-
-  current_applied_wrench = cartesian_impedance_wrench;
-  current_applied_torque = cartesian_impedance_torques;
-
-  Eigen::VectorXd computed_torque = cartesian_impedance_torques+C*q_dot*(M_PI/180)+g;
-
-  Eigen::VectorXd filtered_torque = low_pass_filter(computed_torque, this->prev_commanded_torque);
-
-  this->prev_commanded_torque = filtered_torque;
-
-  return filtered_torque;
-}
 
 Eigen::VectorXd Dynamics_Utilities::cartesian_impedance_no_g(Eigen::VectorXd x_des, Eigen::VectorXd q, Eigen::VectorXd q_dot) {
 
@@ -180,31 +157,19 @@ Eigen::VectorXd Dynamics_Utilities::cartesian_impedance_no_g(Eigen::VectorXd x_d
 
   this->forward_kinematics(q);
   this->calculate_ee_pose_delta(x_des);
-  // std::cout << "Current Pose: " << current_pose.transpose() << std::endl;
-  // std::cout << "Desired Pose: " << x_des.transpose() << std::endl;
-  // std::cout << "Current Pose Delta: " << current_pose_delta.transpose() << std::endl;
-  // std::cout << "C" << std::endl << C << std::endl;
-  // std::cout << "M" << std::endl << M << std::endl;
-  // std::cout << "J" << std::endl << J << std::endl;
+
 
   Eigen::VectorXd cartesian_impedance_wrench = Kp_cart*current_pose_delta-Kd_cart*J*q_dot;
   Eigen::VectorXd cartesian_impedance_torques = J.transpose()*cartesian_impedance_wrench;
 
-  current_applied_wrench = cartesian_impedance_wrench;
-  current_applied_torque = cartesian_impedance_torques;
-
-  // std::cout << "Cartesian Impedance Wrench: " << cartesian_impedance_wrench.transpose() << std::endl;
-  // std::cout << "Cartesian Impedance Torques: " << cartesian_impedance_torques.transpose() << std::endl;
-  // std::cout << "Coriolis Torques: " << (C*q_dot).transpose() << std::endl;
-
-  Eigen::VectorXd computed_torque = cartesian_impedance_torques+C*q_dot;
+  Eigen::VectorXd commanded_torque = cartesian_impedance_torques+C*q_dot;
   
   if(prev_commanded_torque.isZero() || prev_commanded_torque.hasNaN()) {
-    this->prev_commanded_torque = computed_torque;
+    this->prev_commanded_torque = commanded_torque;
   }
 
   // std::cout << "Computed Torque: " << computed_torque.transpose() << std::endl;
-  Eigen::VectorXd filtered_torque = low_pass_filter(computed_torque, this->prev_commanded_torque);
+  Eigen::VectorXd filtered_torque = low_pass_filter(commanded_torque, this->prev_commanded_torque);
 
   this->prev_commanded_torque = filtered_torque;
 
@@ -236,4 +201,15 @@ Eigen::Vector3d Dynamics_Utilities::calculateOrientationError(Eigen::Quaterniond
   // convert to axis angle
   Eigen::AngleAxisd error_quaternion_angle_axis(error_quaternion);
   return error_quaternion_angle_axis.axis() * error_quaternion_angle_axis.angle();
+}
+
+Eigen::VectorXd Dynamics_Utilities::convertTorqueToWrench(Eigen::VectorXd torque, Eigen::VectorXd q) {
+  Eigen::MatrixXd J = this->get_J(q);
+  // Compute the pseudo-inverse of the Jacobian
+  Eigen::MatrixXd J_pseudo_inverse = J.completeOrthogonalDecomposition().pseudoInverse();
+
+  // Convert torque to wrench
+  Eigen::VectorXd wrench = J_pseudo_inverse.transpose() * torque;
+
+  return wrench;
 }
