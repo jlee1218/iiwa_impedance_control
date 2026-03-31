@@ -36,13 +36,13 @@ class Dynamics_Utilities {
     pinocchio::SE3 current_pose_SE3;
     Eigen::VectorXd prev_commanded_torque = Eigen::VectorXd(7).setZero();
 
-    Eigen::VectorXd default_Kp_cart = (Eigen::VectorXd(6) << 100.0, 100.0, 100.0, 10.0, 10.0, 10.0).finished();
+    Eigen::VectorXd default_Kp_cart = (Eigen::VectorXd(6) << 100.0, 100.0, 100.0, 5.0, 5.0, 5.0).finished();
     void set_cartesian_impedance_parameters(double Kp_x, double Kp_y, double Kp_z, double Kp_roll, double Kp_pitch, double Kp_yaw);
 
     Eigen::MatrixXd Kp_cart = Eigen::MatrixXd(6,6).setZero();
     Eigen::MatrixXd Kd_cart = Eigen::MatrixXd(6,6).setZero();
 
-    Eigen::VectorXd low_pass_filter(Eigen::VectorXd desired_signal, Eigen::VectorXd prev_signal, double cutoff_freq =  700*(M_PI/180), double process_freq = 1000);
+    Eigen::VectorXd low_pass_filter(Eigen::VectorXd desired_signal, Eigen::VectorXd prev_signal, double cutoff_freq =  20, double process_freq = 500);
 
   private:
     pinocchio::Model robot_model;

@@ -52,7 +52,9 @@ class ImpedanceControllerNode : public rclcpp::Node {
       for (size_t i = 0; i < 6; ++i) {
         desired_ee_pose_[i] = msg->data[i];
       }
-      RCLCPP_INFO(logger, "Updated desired end-effector pose.");
+      RCLCPP_INFO(logger, "Updated desired end-effector pose. [%f, %f, %f, %f, %f, %f]", 
+        desired_ee_pose_[0], desired_ee_pose_[1], desired_ee_pose_[2], 
+        desired_ee_pose_[3], desired_ee_pose_[4], desired_ee_pose_[5]);
     }
 
     void impedance_parameters_callback(const std_msgs::msg::Float64MultiArray::SharedPtr msg)
@@ -74,7 +76,7 @@ class ImpedanceControllerNode : public rclcpp::Node {
 
       if (!first_callback_) {
         first_callback_ = true;
-        this->set_desired_ee_pose();
+        this->initialize_ee_pose();
 
       } else {
         const double dt = static_cast<double>((current_state->time_stamp_nano_sec - prev_time_stamp_) / 1e9);
@@ -107,15 +109,10 @@ class ImpedanceControllerNode : public rclcpp::Node {
         measured_pose_msg.position.y = dynamics_utilities.current_pose(1);
         measured_pose_msg.position.z = dynamics_utilities.current_pose(2);
         
-        // Convert RPY to quaternion for pose delta orientation
-        double roll = dynamics_utilities.current_pose_delta(3);
-        double pitch = dynamics_utilities.current_pose_delta(4);
-        double yaw = dynamics_utilities.current_pose_delta(5);
-        
         tf2::Quaternion quaternion_current;
-        quaternion_current.setRPY(dynamics_utilities.current_pose_delta(3), 
-                                  dynamics_utilities.current_pose_delta(4), 
-                                  dynamics_utilities.current_pose_delta(5));
+        quaternion_current.setRPY(dynamics_utilities.current_pose(3), 
+                                  dynamics_utilities.current_pose(4), 
+                                  dynamics_utilities.current_pose(5));
 
         measured_pose_msg.orientation = tf2::toMsg(quaternion_current);
 
@@ -170,7 +167,7 @@ class ImpedanceControllerNode : public rclcpp::Node {
 
     }
 
-    void set_desired_ee_pose() {
+    void initialize_ee_pose() {
       this->dynamics_utilities.forward_kinematics(Eigen::Map<const Eigen::VectorXd>(measured_joint_positions_.data(), measured_joint_positions_.size()));
       Eigen::VectorXd desired_ee_pose_eigen = dynamics_utilities.current_pose;
       
