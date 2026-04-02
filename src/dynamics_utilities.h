@@ -26,10 +26,7 @@ class Dynamics_Utilities {
 
     Eigen::VectorXd convertTorqueToWrench(Eigen::VectorXd torque, Eigen::VectorXd q);
 
-    // Eigen::VectorXd joint_impedance(Eigen::VectorXd q_des, Eigen::VectorXd q_dot_des, Eigen::VectorXd q, Eigen::VectorXd q_dot, double K_p = 1.0, double K_d = 1.0);
-
-
-    Eigen::VectorXd cartesian_impedance_no_g(Eigen::VectorXd x_des, Eigen::VectorXd q, Eigen::VectorXd q_dot);
+    Eigen::VectorXd cartesian_impedance_no_g(Eigen::VectorXd x_des, Eigen::VectorXd q, Eigen::VectorXd v_des, Eigen::VectorXd q_dot);
 
     Eigen::VectorXd current_pose_delta = Eigen::VectorXd(6).setZero();
     Eigen::VectorXd current_pose = Eigen::VectorXd(6).setZero();
@@ -49,10 +46,6 @@ class Dynamics_Utilities {
     std::unique_ptr<pinocchio::Data> data; 
 
     const std::string PLANNING_FRAME = "link_ee";
-
-    const Eigen::VectorXd K_stiction = (Eigen::VectorXd(7) << 50.0, 20.0, 50.0, 80.0, 50.0, 20.0, 50.0).finished();
-
-    const double step_time = 0.001;
 
     Eigen::Vector3d calculateOrientationError(Eigen::Quaterniond orientation_d, Eigen::Quaterniond orientation);
 };

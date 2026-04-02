@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from tkinter import Tk, filedialog
+from tkinter import Tk, filedialog, simpledialog
 
 from rosbag2_py import SequentialReader, StorageOptions, ConverterOptions
 from rclpy.serialization import deserialize_message
@@ -19,7 +19,33 @@ def choose_bag():
     root = Tk()
     root.withdraw()
     folder_selected = filedialog.askdirectory(title="Select ROS2 Bag Folder")
+    root.destroy()
     return folder_selected
+
+
+def choose_plot_duration_seconds():
+    root = Tk()
+    root.withdraw()
+    duration = simpledialog.askfloat(
+        "Plot Duration",
+        "How many seconds to plot?\nLeave empty or Cancel to plot all.",
+        minvalue=0.0,
+    )
+    root.destroy()
+    return duration
+
+
+def choose_title_prefix():
+    root = Tk()
+    root.withdraw()
+    prefix = simpledialog.askstring(
+        "Title Prefix",
+        "Optional title prefix (leave empty for none):",
+    )
+    root.destroy()
+    if prefix is None:
+        return ""
+    return prefix.strip()
 
 
 # =========================
@@ -150,31 +176,40 @@ def get_common_time(data):
 # =========================
 # Plot helpers
 # =========================
-def plot_pose(cmd_pose, meas_pose, t):
+def plot_pose(cmd_pose, meas_pose, t, title_prefix=""):
     labels = ["X [m]", "Y [m]", "Z [m]", "Roll [rads]", "Pitch [rads]", "Yaw [rads]"]
     fig, axs = plt.subplots(3, 2, sharex=True)
-    fig.suptitle("Pose")
+    title = f"{title_prefix} - Pose" if title_prefix else "Pose"
+    fig.suptitle(title)
+
+    meas_pose[meas_pose[:, 5] < 0, 5] += 2 * np.pi
 
     err = cmd_pose - meas_pose
 
     for i in range(6):
         row, col = i % 3, i // 3
 
-        axs[row, col].plot(t[:len(cmd_pose)], cmd_pose[:, i], label="Commanded")
-        axs[row, col].plot(t[:len(meas_pose)], meas_pose[:, i], label="Measured")
-        axs[row, col].plot(t[:len(err)], err[:, i], linestyle='dotted', label="Error")
+        axs[row, col].plot(t[:len(cmd_pose)] - t[0], cmd_pose[:, i], label="Commanded")
+        axs[row, col].plot(t[:len(meas_pose)] - t[0], meas_pose[:, i], label="Measured")
+        axs[row, col].plot(t[:len(err)] - t[0], err[:, i], linestyle='dotted', label="Error")
         axs[row, col].set_ylabel(labels[i])
         axs[row, col].grid()
 
     axs[-1, 0].set_xlabel("Time (s)")
     axs[-1, 1].set_xlabel("Time (s)")
-    axs[0, 0].legend()
+
+    handles, labels = axs[0, 0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, -0.0), ncol=3, frameon=True)
+    plt.tight_layout()
+    fig.subplots_adjust(bottom=0.18) 
 
 
-def plot_wrench(cmd, meas, t):
+
+def plot_wrench(cmd, meas, t, title_prefix=""):
     labels = ["Force_x [N]", "Force_y [N]", "Force_z [N]", "Torque_x [Nm]", "Torque_y [Nm]", "Torque_z [Nm]"]
     fig, axs = plt.subplots(3, 2, sharex=True)
-    fig.suptitle("Wrench")
+    title = f"{title_prefix} - Wrench" if title_prefix else "Wrench"
+    fig.suptitle(title)
 
     cmd = np.array(cmd)
     meas = np.array(meas)
@@ -183,48 +218,63 @@ def plot_wrench(cmd, meas, t):
     for i in range(6):
         ros, col = i % 3, i // 3
 
-        axs[ros, col].plot(t[:len(cmd)], cmd[:, i], label="Commanded")
-        axs[ros, col].plot(t[:len(meas)], meas[:, i], label="Measured")
-        axs[ros, col].plot(t[:len(err)], err[:, i], linestyle='dotted', label="Error")
+        axs[ros, col].plot(t[:len(cmd)] - t[0], cmd[:, i], label="Commanded")
+        axs[ros, col].plot(t[:len(meas)] - t[0], meas[:, i], label="Measured")
+        axs[ros, col].plot(t[:len(err)] - t[0], err[:, i], linestyle='dotted', label="Error")
         axs[ros, col].set_ylabel(labels[i])
         axs[ros, col].grid()
 
     axs[-1, 0].set_xlabel("Time (s)")
     axs[-1, 1].set_xlabel("Time (s)")
-    axs[0, 0].legend()
+
+    handles, labels = axs[0, 0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, -0.0), ncol=3, frameon=True)
+    plt.tight_layout()
+    fig.subplots_adjust(bottom=0.18) 
 
 
-def plot_joints(cmd, meas, t):
+def plot_joints(cmd, meas, t, title_prefix=""):
     fig, axs = plt.subplots(7, 1, sharex=True)
-    fig.suptitle("Joint Positions")
+    title = f"{title_prefix} - Joint Positions" if title_prefix else "Joint Positions"
+    fig.suptitle(title)
 
     cmd = np.array(cmd)
     meas = np.array(meas)
     err = cmd - meas
 
     for i in range(7):
-        axs[i].plot(t[:len(cmd)], cmd[:, i], label="Commanded")
-        axs[i].plot(t[:len(meas)], meas[:, i], label="Measured")
-        axs[i].plot(t[:len(err)], err[:, i], linestyle='dotted', label="Error")
+        axs[i].plot(t[:len(cmd)] - t[0], cmd[:, i], label="Commanded")
+        axs[i].plot(t[:len(meas)] - t[0], meas[:, i], label="Measured")
+        axs[i].plot(t[:len(err)] - t[0], err[:, i], linestyle='dotted', label="Error")
         axs[i].set_ylabel(f"J{i+1}")
         axs[i].grid()
 
     axs[-1].set_xlabel("Time (s)")
-    axs[0].legend()
+
+    handles, labels = axs[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, -0.0), ncol=3, frameon=True)
+    plt.tight_layout()
+    fig.subplots_adjust(bottom=0.18) 
 
 
-def plot_external_torque(ext, t):
+def plot_external_torque(ext, t, title_prefix=""):
     fig, axs = plt.subplots(7, 1, sharex=True)
-    fig.suptitle("External Torque")
+    title = f"{title_prefix} - External Torque" if title_prefix else "External Torque"
+    fig.suptitle(title)
 
     ext = np.array(ext)
 
     for i in range(7):
-        axs[i].plot(t[:len(ext)], ext[:, i])
+        axs[i].plot(t[:len(ext)] -t[0], ext[:, i])
         axs[i].set_ylabel(f"J{i+1}")
         axs[i].grid()
 
     axs[-1].set_xlabel("Time (s)")
+
+    handles, labels = axs[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, -0.0), ncol=3, frameon=True)
+    plt.tight_layout()
+    fig.subplots_adjust(bottom=0.18) 
 
 
 # =========================
@@ -232,6 +282,11 @@ def plot_external_torque(ext, t):
 # =========================
 def main():
     bag_path = choose_bag()
+    if not bag_path:
+        return
+
+    duration_s = choose_plot_duration_seconds()
+    title_prefix = choose_title_prefix()
     data = read_bag(bag_path)
 
     # Extract raw signals
@@ -260,11 +315,25 @@ def main():
 
     ext_torque_i = interp_signal(data["joint_t"], external_torque, t_common)
 
+    if duration_s is not None:
+        t_limit = t_common[0] + duration_s
+        mask = t_common <= t_limit
+
+        if np.any(mask):
+            t_common = t_common[mask]
+            cmd_pose_i = cmd_pose_i[mask]
+            meas_pose_i = meas_pose_i[mask]
+            cmd_wrench_i = cmd_wrench_i[mask]
+            meas_wrench_i = meas_wrench_i[mask]
+            joint_cmd_i = joint_cmd_i[mask]
+            joint_meas_i = joint_meas_i[mask]
+            ext_torque_i = ext_torque_i[mask]
+
     # Plot using synchronized data
-    plot_pose(cmd_pose_i, meas_pose_i, t_common)
-    plot_wrench(cmd_wrench_i, meas_wrench_i, t_common)
-    plot_joints(joint_cmd_i, joint_meas_i, t_common)
-    plot_external_torque(ext_torque_i, t_common)
+    plot_pose(cmd_pose_i, meas_pose_i, t_common, title_prefix)
+    plot_wrench(cmd_wrench_i, meas_wrench_i, t_common, title_prefix)
+    plot_joints(joint_cmd_i, joint_meas_i, t_common, title_prefix)
+    plot_external_torque(ext_torque_i, t_common, title_prefix)
 
     plt.show()
 

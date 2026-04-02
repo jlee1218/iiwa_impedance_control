@@ -13,8 +13,11 @@
 
 using namespace std::chrono_literals;
 
+
+// Node to generate desired trajectories for the impedance controller. 
+// This node subscribes to the robot's current state and publishes desired end-effector poses on a topic that the impedance controller subscribes to. 
+// The trajectory can be modified in the state callback function to test different scenarios, such as free-space motion or stiff environment contact.
 class TrajectoryGeneratorNode : public rclcpp::Node {
-  static constexpr double amplitude_ = 0.05; // 0.1
   static constexpr double frequency_ = 0.1;
 
   public:
@@ -37,6 +40,7 @@ class TrajectoryGeneratorNode : public rclcpp::Node {
   private:
     void state_callback(const lbr_fri_idl::msg::LBRState::SharedPtr current_state)
     {
+      // generate trajectory based on the starting pose of the robot
       if(!initialized_) {
         dynamics_utilities_.forward_kinematics(
           Eigen::Map<const Eigen::VectorXd>(current_state->measured_joint_position.data(), current_state->measured_joint_position.size()));
@@ -46,7 +50,8 @@ class TrajectoryGeneratorNode : public rclcpp::Node {
         }
         initialized_ = true;
       }
-
+      
+      // Choose trajectory for scenarios
       // sine_traj();
       down_shift_traj();
 
@@ -60,10 +65,14 @@ class TrajectoryGeneratorNode : public rclcpp::Node {
       desired_pose_publisher_->publish(desired_pose_msg);
     }
 
+
+    // x,y,z sinusoidal trajectory with fixed orientation for free-space motion scenario
     void sine_traj() {
-        desired_pose_[0] = start_pose_[0] + amplitude_ * sin(phase_);
-        desired_pose_[1] = start_pose_[1] + amplitude_ * sin(phase_);  
-        desired_pose_[2] = start_pose_[2] + amplitude_ * sin(phase_); 
+        double amplitude = 0.1;
+
+        desired_pose_[0] = start_pose_[0] + amplitude * sin(phase_);
+        desired_pose_[1] = start_pose_[1] + amplitude * sin(phase_);  
+        desired_pose_[2] = start_pose_[2] + amplitude * sin(phase_); 
         desired_pose_[3] = start_pose_[3]; 
         desired_pose_[4] = start_pose_[4]; 
         desired_pose_[5] = start_pose_[5];  
@@ -71,10 +80,14 @@ class TrajectoryGeneratorNode : public rclcpp::Node {
         phase_ += 2 * M_PI * frequency_ * dt_;
     }
 
+
+    // z sinusoidal trajectory with fixed orientation for stiff environment contact scenario
     void down_shift_traj() {
+        double amplitude = 0.05; 
+
         desired_pose_[0] = start_pose_[0];
         desired_pose_[1] = start_pose_[1];  
-        desired_pose_[2] = start_pose_[2] + amplitude_ * sin(phase_ + M_PI/2 ) - amplitude_; 
+        desired_pose_[2] = start_pose_[2] + amplitude * sin(phase_ + M_PI/2 ) - amplitude; 
         desired_pose_[3] = start_pose_[3]; 
         desired_pose_[4] = start_pose_[4]; 
         desired_pose_[5] = start_pose_[5]; 
