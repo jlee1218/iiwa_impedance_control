@@ -1,0 +1,17 @@
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/lib/jeffrey_controllers/impedance_controller
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/lib/jeffrey_controllers/trajectory_generator
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/ament_index/resource_index/package_run_dependencies/jeffrey_controllers
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/ament_index/resource_index/parent_prefix_path/jeffrey_controllers
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/environment/ament_prefix_path.sh
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/environment/ament_prefix_path.dsv
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/environment/path.sh
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/environment/path.dsv
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/local_setup.bash
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/local_setup.sh
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/local_setup.zsh
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/local_setup.dsv
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/package.dsv
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/ament_index/resource_index/packages/jeffrey_controllers
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/cmake/jeffrey_controllersConfig.cmake
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/cmake/jeffrey_controllersConfig-version.cmake
+/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/package.xml

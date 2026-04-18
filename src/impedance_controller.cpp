@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <cmath>
+#include <algorithm>
 
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/pose.hpp"
@@ -38,6 +39,15 @@ class ImpedanceControllerNode : public rclcpp::Node {
       commanded_pose_publisher_ = this->create_publisher<geometry_msgs::msg::Pose>("impedance_controller/commanded_pose", 1);
       commanded_wrench_publisher_ = this->create_publisher<geometry_msgs::msg::Wrench>("impedance_controller/commanded_wrench", 1);
       measured_wrench_publisher_ = this->create_publisher<geometry_msgs::msg::Wrench>("impedance_controller/measured_wrench", 1);
+
+      current_impedance_torque_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("impedance_controller/current_impedance_torque", 1);
+      current_coriolis_torque_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("impedance_controller/current_coriolis_torque", 1);
+      current_pose_delta_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("impedance_controller/current_pose_delta", 1);
+      current_stiffness_wrench_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("impedance_controller/current_stiffness_wrench", 1);
+      current_damping_wrench_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("impedance_controller/current_damping_wrench", 1);
+      current_joint_velocities_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("impedance_controller/current_joint_velocities", 1);
+
+      current_joint_velocities_ = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
       RCLCPP_INFO(logger, "Impedance Controller Node has been started.");
     }
@@ -77,9 +87,20 @@ class ImpedanceControllerNode : public rclcpp::Node {
       if (!first_callback_) {
         first_callback_ = true;
         this->initialize_ee_pose();
+        prev_joint_positions_ = measured_joint_positions_;
 
       } else {
-        const double dt = static_cast<double>((current_state->time_stamp_nano_sec - prev_time_stamp_) / 1e9);
+        double dt = static_cast<double>((current_state->time_stamp_nano_sec - prev_time_stamp_) / 1e9);
+
+        // const double dt = 0.002;
+        
+        for(size_t i = 0; i < 7; ++i) {
+          measured_joint_positions_[i] = low_pass_filter(measured_joint_positions_[i], prev_joint_positions_[i], 0.9);
+        }
+
+        // for (size_t i = 0; i < 7; ++i) {
+        //   current_joint_velocities_[i] = low_pass_filter(((measured_joint_positions_[i] - prev_joint_positions_[i]) / dt), current_joint_velocities_[i], 0.1);
+        // }
         
         for (size_t i = 0; i < 7; ++i) {
           current_joint_velocities_[i] = (measured_joint_positions_[i] - prev_joint_positions_[i]) / dt;
@@ -151,13 +172,53 @@ class ImpedanceControllerNode : public rclcpp::Node {
         measured_wrench_msg.torque.y = measured_wrench(4);
         measured_wrench_msg.torque.z = measured_wrench(5);
 
-        
+        std_msgs::msg::Float64MultiArray impedance_torque_msg;
+        impedance_torque_msg.data.resize(7);
+        for (size_t i = 0; i < 7; ++i) {
+          impedance_torque_msg.data[i] = dynamics_utilities.current_impedance_torque(i);
+        }
+
+        std_msgs::msg::Float64MultiArray coriolis_torque_msg;
+        coriolis_torque_msg.data.resize(7);
+        for (size_t i = 0; i < 7; ++i) {
+          coriolis_torque_msg.data[i] = dynamics_utilities.current_coriolis_torque(i);
+        } 
+
+        std_msgs::msg::Float64MultiArray current_pose_delta_msg;
+        current_pose_delta_msg.data.resize(6);
+        for (size_t i = 0; i < 6; ++i) {
+          current_pose_delta_msg.data[i] = dynamics_utilities.current_pose_delta(i);
+        }
+
+        std_msgs::msg::Float64MultiArray stiffness_wrench_msg;
+        stiffness_wrench_msg.data.resize(6);
+        for (size_t i = 0; i < 6; ++i) {
+          stiffness_wrench_msg.data[i] = dynamics_utilities.current_stiffness_wrench(i);
+        }
+
+        std_msgs::msg::Float64MultiArray damping_wrench_msg;
+        damping_wrench_msg.data.resize(6);
+        for (size_t i = 0; i < 6; ++i) {
+          damping_wrench_msg.data[i] = dynamics_utilities.current_damping_wrench(i);
+        }
+
+        std_msgs::msg::Float64MultiArray current_joint_velocities_msg;
+        current_joint_velocities_msg.data.resize(7);
+        for (size_t i = 0; i < 7; ++i) {
+          current_joint_velocities_msg.data[i] = current_joint_velocities_[i];
+        }
+
+        current_impedance_torque_publisher_->publish(impedance_torque_msg);
+        current_coriolis_torque_publisher_->publish(coriolis_torque_msg);
+        current_stiffness_wrench_publisher_->publish(stiffness_wrench_msg);
+        current_damping_wrench_publisher_->publish(damping_wrench_msg);
+        current_joint_velocities_publisher_->publish(current_joint_velocities_msg);
+
         commanded_pose_publisher_->publish(commanded_pose_msg);
         measured_pose_publisher_->publish(measured_pose_msg);
         commanded_wrench_publisher_->publish(commanded_wrench_msg);
         measured_wrench_publisher_->publish(measured_wrench_msg);
- 
-
+        current_pose_delta_publisher_->publish(current_pose_delta_msg);
         torque_publisher_->publish(torque_command);
         
       }
@@ -184,6 +245,11 @@ class ImpedanceControllerNode : public rclcpp::Node {
 
     }
 
+    double low_pass_filter(const double new_value, const double prev_value, const double alpha) {
+      const double alpha_clamped = std::clamp(alpha, 0.0, 1.0);
+      return alpha_clamped * new_value + (1.0 - alpha_clamped) * prev_value;
+    }
+
     std::array<double, 6> desired_ee_pose_{};
     std::array<double, 7> prev_joint_positions_{};
     std::array<double, 7> measured_joint_positions_{};
@@ -208,6 +274,14 @@ class ImpedanceControllerNode : public rclcpp::Node {
     rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr commanded_pose_publisher_;
     rclcpp::Publisher<geometry_msgs::msg::Wrench>::SharedPtr commanded_wrench_publisher_;
     rclcpp::Publisher<geometry_msgs::msg::Wrench>::SharedPtr measured_wrench_publisher_;
+
+    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr current_impedance_torque_publisher_;
+    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr current_coriolis_torque_publisher_;
+    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr current_stiffness_wrench_publisher_;
+    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr current_damping_wrench_publisher_;
+    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr current_joint_velocities_publisher_;
+
+    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr current_pose_delta_publisher_;
 
     size_t count_;
 };

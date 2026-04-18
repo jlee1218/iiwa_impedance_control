@@ -1,0 +1,106 @@
+[0.074s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--packages-select', 'jeffrey_controllers']
+[0.074s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=16, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=['jeffrey_controllers'], packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x73b126111e80>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x73b1262763f0>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x73b1262763f0>>, mixin_verb=('build',))
+[0.104s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.105s] INFO:colcon.colcon_metadata.package_discovery.colcon_meta:Using configuration from '/root/.colcon/metadata/default/Gazebo.meta'
+[0.105s] INFO:colcon.colcon_metadata.package_discovery.colcon_meta:Using configuration from '/root/.colcon/metadata/default/fastdds.meta'
+[0.105s] INFO:colcon.colcon_metadata.package_discovery.colcon_meta:Using configuration from '/root/.colcon/metadata/default/fastrtps.meta'
+[0.105s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.105s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.105s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.105s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.105s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.105s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/ros2_ws/src/jeffrey_controllers'
+[0.105s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.105s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.105s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.105s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.105s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.105s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.105s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.105s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.105s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.127s] DEBUG:colcon.colcon_core.package_identification:Package '.' with type 'ros.ament_cmake' and name 'jeffrey_controllers'
+[0.127s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.127s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.127s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.127s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.127s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.140s] Level 5:colcon.colcon_core.verb:set package 'jeffrey_controllers' build argument 'cmake_args' from command line to 'None'
+[0.140s] Level 5:colcon.colcon_core.verb:set package 'jeffrey_controllers' build argument 'cmake_target' from command line to 'None'
+[0.140s] Level 5:colcon.colcon_core.verb:set package 'jeffrey_controllers' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.140s] Level 5:colcon.colcon_core.verb:set package 'jeffrey_controllers' build argument 'cmake_clean_cache' from command line to 'False'
+[0.140s] Level 5:colcon.colcon_core.verb:set package 'jeffrey_controllers' build argument 'cmake_clean_first' from command line to 'False'
+[0.140s] Level 5:colcon.colcon_core.verb:set package 'jeffrey_controllers' build argument 'cmake_force_configure' from command line to 'False'
+[0.140s] Level 5:colcon.colcon_core.verb:set package 'jeffrey_controllers' build argument 'ament_cmake_args' from command line to 'None'
+[0.140s] Level 5:colcon.colcon_core.verb:set package 'jeffrey_controllers' build argument 'catkin_cmake_args' from command line to 'None'
+[0.140s] Level 5:colcon.colcon_core.verb:set package 'jeffrey_controllers' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.140s] DEBUG:colcon.colcon_core.verb:Building package 'jeffrey_controllers' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ros2_ws/src/jeffrey_controllers/build/jeffrey_controllers', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers', 'merge_install': False, 'path': '/home/ros2_ws/src/jeffrey_controllers', 'symlink_install': False, 'test_result_base': None}
+[0.140s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.140s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.141s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ros2_ws/src/jeffrey_controllers' with build type 'ament_cmake'
+[0.141s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ros2_ws/src/jeffrey_controllers'
+[0.142s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.142s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.142s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.150s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros2_ws/src/jeffrey_controllers/build/jeffrey_controllers': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ros2_ws/install/lbr_demos_py:/home/ros2_ws/install/lbr_controllers:/home/ros2_ws/install/lbr_moveit:/home/ros2_ws/install/lbr_demos_advanced_py:/opt/ros/jazzy /usr/bin/cmake /home/ros2_ws/src/jeffrey_controllers -DCMAKE_INSTALL_PREFIX=/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers
+[2.273s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros2_ws/src/jeffrey_controllers/build/jeffrey_controllers' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ros2_ws/install/lbr_demos_py:/home/ros2_ws/install/lbr_controllers:/home/ros2_ws/install/lbr_moveit:/home/ros2_ws/install/lbr_demos_advanced_py:/opt/ros/jazzy /usr/bin/cmake /home/ros2_ws/src/jeffrey_controllers -DCMAKE_INSTALL_PREFIX=/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers
+[2.273s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros2_ws/src/jeffrey_controllers/build/jeffrey_controllers': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ros2_ws/install/lbr_demos_py:/home/ros2_ws/install/lbr_controllers:/home/ros2_ws/install/lbr_moveit:/home/ros2_ws/install/lbr_demos_advanced_py:/opt/ros/jazzy /usr/bin/cmake --build /home/ros2_ws/src/jeffrey_controllers/build/jeffrey_controllers -- -j16 -l16
+[48.980s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros2_ws/src/jeffrey_controllers/build/jeffrey_controllers' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ros2_ws/install/lbr_demos_py:/home/ros2_ws/install/lbr_controllers:/home/ros2_ws/install/lbr_moveit:/home/ros2_ws/install/lbr_demos_advanced_py:/opt/ros/jazzy /usr/bin/cmake --build /home/ros2_ws/src/jeffrey_controllers/build/jeffrey_controllers -- -j16 -l16
+[48.993s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros2_ws/src/jeffrey_controllers/build/jeffrey_controllers': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ros2_ws/install/lbr_demos_py:/home/ros2_ws/install/lbr_controllers:/home/ros2_ws/install/lbr_moveit:/home/ros2_ws/install/lbr_demos_advanced_py:/opt/ros/jazzy /usr/bin/cmake --install /home/ros2_ws/src/jeffrey_controllers/build/jeffrey_controllers
+[49.087s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(jeffrey_controllers)
+[49.087s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros2_ws/src/jeffrey_controllers/build/jeffrey_controllers' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ros2_ws/install/lbr_demos_py:/home/ros2_ws/install/lbr_controllers:/home/ros2_ws/install/lbr_moveit:/home/ros2_ws/install/lbr_demos_advanced_py:/opt/ros/jazzy /usr/bin/cmake --install /home/ros2_ws/src/jeffrey_controllers/build/jeffrey_controllers
+[49.092s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers' for CMake module files
+[49.092s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers' for CMake config files
+[49.093s] Level 1:colcon.colcon_core.shell:create_environment_hook('jeffrey_controllers', 'cmake_prefix_path')
+[49.093s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/hook/cmake_prefix_path.ps1'
+[49.094s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/hook/cmake_prefix_path.dsv'
+[49.094s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/hook/cmake_prefix_path.sh'
+[49.095s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/lib'
+[49.095s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/bin'
+[49.095s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/lib/pkgconfig/jeffrey_controllers.pc'
+[49.097s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/lib/python3.12/site-packages'
+[49.097s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/bin'
+[49.097s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/package.ps1'
+[49.097s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/package.dsv'
+[49.098s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/package.sh'
+[49.098s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/package.bash'
+[49.099s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/package.zsh'
+[49.099s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/colcon-core/packages/jeffrey_controllers)
+[49.100s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(jeffrey_controllers)
+[49.100s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers' for CMake module files
+[49.100s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers' for CMake config files
+[49.100s] Level 1:colcon.colcon_core.shell:create_environment_hook('jeffrey_controllers', 'cmake_prefix_path')
+[49.100s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/hook/cmake_prefix_path.ps1'
+[49.101s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/hook/cmake_prefix_path.dsv'
+[49.101s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/hook/cmake_prefix_path.sh'
+[49.101s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/lib'
+[49.101s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/bin'
+[49.101s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/lib/pkgconfig/jeffrey_controllers.pc'
+[49.101s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/lib/python3.12/site-packages'
+[49.101s] Level 1:colcon.colcon_core.environment:checking '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/bin'
+[49.101s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/package.ps1'
+[49.102s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/package.dsv'
+[49.102s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/package.sh'
+[49.102s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/package.bash'
+[49.103s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/jeffrey_controllers/package.zsh'
+[49.103s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ros2_ws/src/jeffrey_controllers/install/jeffrey_controllers/share/colcon-core/packages/jeffrey_controllers)
+[49.103s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[49.103s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[49.103s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[49.103s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[49.112s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[49.112s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[49.112s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[49.112s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[49.116s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.Spawn.ExecFailed: /usr/bin/dbus-launch terminated abnormally without any error message
+[49.116s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[49.117s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ros2_ws/src/jeffrey_controllers/install/local_setup.ps1'
+[49.117s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ros2_ws/src/jeffrey_controllers/install/_local_setup_util_ps1.py'
+[49.118s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ros2_ws/src/jeffrey_controllers/install/setup.ps1'
+[49.123s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ros2_ws/src/jeffrey_controllers/install/local_setup.sh'
+[49.124s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ros2_ws/src/jeffrey_controllers/install/_local_setup_util_sh.py'
+[49.124s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ros2_ws/src/jeffrey_controllers/install/setup.sh'
+[49.125s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ros2_ws/src/jeffrey_controllers/install/local_setup.bash'
+[49.125s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ros2_ws/src/jeffrey_controllers/install/setup.bash'
+[49.127s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ros2_ws/src/jeffrey_controllers/install/local_setup.zsh'
+[49.128s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ros2_ws/src/jeffrey_controllers/install/setup.zsh'

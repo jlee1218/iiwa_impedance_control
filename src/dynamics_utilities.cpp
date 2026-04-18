@@ -117,7 +117,7 @@ Eigen::VectorXd Dynamics_Utilities::low_pass_filter(Eigen::VectorXd desired_sign
 }
 
 Eigen::MatrixXd Dynamics_Utilities::get_C(Eigen::VectorXd q, Eigen::VectorXd q_dot) {
-  Eigen::MatrixXd cor_mat = pinocchio::computeCoriolisMatrix(robot_model, *data, q, q_dot*(M_PI/180.0));
+  Eigen::MatrixXd cor_mat = pinocchio::computeCoriolisMatrix(robot_model, *data, q, q_dot);
 
   return cor_mat;
 }
@@ -159,10 +159,17 @@ Eigen::VectorXd Dynamics_Utilities::cartesian_impedance_no_g(Eigen::VectorXd x_d
   this->calculate_ee_pose_delta(x_des);
 
 
-  Eigen::VectorXd cartesian_impedance_wrench = Kp_cart*current_pose_delta-Kd_cart*J*q_dot;
-  Eigen::VectorXd cartesian_impedance_torques = J.transpose()*cartesian_impedance_wrench;
+  Eigen::VectorXd cartesian_impedance_stiffness_wrench = Kp_cart*current_pose_delta;
+  Eigen::VectorXd cartesian_impedance_damping_wrench = -Kd_cart*J*q_dot;
+  Eigen::VectorXd cartesian_impedance_torques = J.transpose()*(cartesian_impedance_stiffness_wrench+cartesian_impedance_damping_wrench);
+  Eigen::VectorXd coriolis_torques = C*q_dot;
 
-  Eigen::VectorXd commanded_torque = cartesian_impedance_torques+C*q_dot;
+  this->current_stiffness_wrench = cartesian_impedance_stiffness_wrench;
+  this->current_damping_wrench = cartesian_impedance_damping_wrench;
+  this->current_coriolis_torque = coriolis_torques;
+  this->current_impedance_torque = cartesian_impedance_torques;
+
+  Eigen::VectorXd commanded_torque = cartesian_impedance_torques+coriolis_torques;
   
   if(prev_commanded_torque.isZero() || prev_commanded_torque.hasNaN()) {
     this->prev_commanded_torque = commanded_torque;
