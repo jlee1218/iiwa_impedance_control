@@ -94,14 +94,14 @@ class ImpedanceControllerNode : public rclcpp::Node {
 
         // const double dt = 0.002;
         
-        for(size_t i = 0; i < 7; ++i) {
-          measured_joint_positions_[i] = low_pass_filter(measured_joint_positions_[i], prev_joint_positions_[i], 0.9);
-        }
+        // for(size_t i = 0; i < 7; ++i) {
+          // measured_joint_positions_[i] = low_pass_filter(measured_joint_positions_[i], prev_joint_positions_[i], 0.9);
+        // }
 
 
         if(dt > 0.0001) {
           for (size_t i = 0; i < 7; ++i) {
-            current_joint_velocities_[i] = low_pass_filter(((measured_joint_positions_[i] - prev_joint_positions_[i]) / dt), current_joint_velocities_[i], 0.8);
+            current_joint_velocities_[i] = low_pass_filter(((measured_joint_positions_[i] - prev_joint_positions_[i]) / dt), current_joint_velocities_[i], 0.5);
           }
         } 
 

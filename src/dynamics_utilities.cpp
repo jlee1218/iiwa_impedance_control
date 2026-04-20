@@ -167,7 +167,7 @@ Eigen::VectorXd Dynamics_Utilities::cartesian_impedance_no_g(Eigen::VectorXd x_d
   // std::cout << "Previous damping wrench: " << this->current_damping_wrench.transpose() << std::endl;
 
 
-  // Eigen::VectorXd cartesian_impedance_damping_wrench = low_pass_filter(-Kd_cart*J*q_dot, this->current_damping_wrench, 5.0, 500.0);
+  // Eigen::VectorXd cartesian_impedance_damping_wrench = low_pass_filter(-Kd_cart*J*q_dot, this->current_damping_wrench, 10.0, 500.0);
   // if(cartesian_impedance_damping_wrench.hasNaN()) {
   //   cartesian_impedance_damping_wrench = this->current_damping_wrench;
   // }
@@ -191,7 +191,7 @@ Eigen::VectorXd Dynamics_Utilities::cartesian_impedance_no_g(Eigen::VectorXd x_d
   }
 
   // std::cout << "Computed Torque: " << computed_torque.transpose() << std::endl;
-  Eigen::VectorXd filtered_torque = low_pass_filter(commanded_torque, this->prev_commanded_torque);
+  Eigen::VectorXd filtered_torque = low_pass_filter(commanded_torque, this->prev_commanded_torque, 50.0, 500.0);
 
   this->prev_commanded_torque = filtered_torque;
 
@@ -204,8 +204,13 @@ void Dynamics_Utilities::set_cartesian_impedance_parameters(double Kp_x, double 
   Kp << Kp_x, Kp_y, Kp_z, Kp_roll, Kp_pitch, Kp_yaw;
    
   // Critically damp
-  double damping_factor = 0.01;
-  Eigen::VectorXd Kd = 2*damping_factor*Kp.array().sqrt();
+  double damping_factor_translation = 0.8;
+  Eigen::VectorXd Kd = 2*damping_factor_translation*Kp.array().sqrt();
+
+
+  double damping_factor_rotation = 0.4;
+  Eigen::VectorXd Kd_rot = 2*damping_factor_rotation*Kp.array().sqrt();
+  Kd.tail(3) = Kd_rot.tail(3);
 
   Kp_cart.diagonal() = Kp;
   Kd_cart.diagonal() = Kd;

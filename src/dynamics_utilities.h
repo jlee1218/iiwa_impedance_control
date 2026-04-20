@@ -41,7 +41,7 @@ class Dynamics_Utilities {
     Eigen::VectorXd current_stiffness_wrench = Eigen::VectorXd(6).setZero();
     Eigen::VectorXd current_damping_wrench = (Eigen::VectorXd(6) << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0).finished();
 
-    Eigen::VectorXd default_Kp_cart = (Eigen::VectorXd(6) << 200.0, 200.0, 100.0, 5.0, 5.0, 5.0).finished();
+    Eigen::VectorXd default_Kp_cart = (Eigen::VectorXd(6) << 100.0, 100.0, 100.0, 10.0, 10.0, 10.0).finished();
     void set_cartesian_impedance_parameters(double Kp_x, double Kp_y, double Kp_z, double Kp_roll, double Kp_pitch, double Kp_yaw);
 
     Eigen::MatrixXd Kp_cart = Eigen::MatrixXd(6,6).setZero();
