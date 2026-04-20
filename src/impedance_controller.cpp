@@ -98,13 +98,12 @@ class ImpedanceControllerNode : public rclcpp::Node {
           measured_joint_positions_[i] = low_pass_filter(measured_joint_positions_[i], prev_joint_positions_[i], 0.9);
         }
 
-        // for (size_t i = 0; i < 7; ++i) {
-        //   current_joint_velocities_[i] = low_pass_filter(((measured_joint_positions_[i] - prev_joint_positions_[i]) / dt), current_joint_velocities_[i], 0.1);
-        // }
-        
-        for (size_t i = 0; i < 7; ++i) {
-          current_joint_velocities_[i] = (measured_joint_positions_[i] - prev_joint_positions_[i]) / dt;
-        }
+
+        if(dt > 0.0001) {
+          for (size_t i = 0; i < 7; ++i) {
+            current_joint_velocities_[i] = low_pass_filter(((measured_joint_positions_[i] - prev_joint_positions_[i]) / dt), current_joint_velocities_[i], 0.8);
+          }
+        } 
 
         torque_command.joint_position = current_state->measured_joint_position;
 
